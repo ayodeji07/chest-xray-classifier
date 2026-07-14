@@ -88,6 +88,8 @@ def train(
         checkpoint_path: Explicit checkpoint to resume from.
         dry_run:         If True, run only 1 batch per split to
                          verify the pipeline without a full epoch.
+                         Never writes to checkpoints/ — a smoke test
+                         must not overwrite a real trained checkpoint.
 
     Returns:
         Dict with final training metrics and history.
@@ -238,8 +240,8 @@ def train(
         }
         history.append(epoch_record)
 
-        # Save checkpoint every epoch
-        if cfg.save_every_epoch:
+        # Save checkpoint every epoch (skipped for dry runs — see dry_run docs)
+        if cfg.save_every_epoch and not dry_run:
             ckpt_path = Paths.checkpoints / f"checkpoint_epoch_{epoch}.pt"
             save_checkpoint(
                 model, optimiser, scheduler,
@@ -248,16 +250,18 @@ def train(
             )
             _prune_old_checkpoints(cfg.keep_last_n)
 
-        # Save best model
+        # Save best model (skipped for dry runs — must never clobber a
+        # real trained checkpoint with a 1-batch smoke-test result)
         if val_auc > best_auc:
             best_auc    = val_auc
             no_improve  = 0
-            save_checkpoint(
-                model, optimiser, scheduler,
-                epoch, val_auc, best_auc, history,
-                Paths.best_model,
-            )
-            logger.info("  ★ New best model (val_auc=%.4f)", best_auc)
+            if not dry_run:
+                save_checkpoint(
+                    model, optimiser, scheduler,
+                    epoch, val_auc, best_auc, history,
+                    Paths.best_model,
+                )
+                logger.info("  ★ New best model (val_auc=%.4f)", best_auc)
         else:
             no_improve += 1
             logger.info(
