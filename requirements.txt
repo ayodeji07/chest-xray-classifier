@@ -1,0 +1,17 @@
+# Chest X-Ray Classifier — runtime dependencies
+torch>=2.1.0
+torchvision>=0.16.0
+numpy>=1.26.0
+pandas>=2.0.0
+Pillow>=10.0.0
+scikit-learn>=1.4.0
+opencv-python-headless>=4.9.0
+matplotlib>=3.8.0
+plotly>=5.19.0
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.6.0
+streamlit>=1.32.0
+gradio>=4.19.0
+python-dotenv>=1.0.0
+pyarrow>=14.0.0

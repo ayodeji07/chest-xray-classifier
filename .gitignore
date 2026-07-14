@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+data/raw/images/
+data/raw/subset/
+data/processed/
+checkpoints/*.pt
+!checkpoints/.gitkeep
+*.db
+.ipynb_checkpoints/
+.DS_Store
