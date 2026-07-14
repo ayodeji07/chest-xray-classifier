@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 from typing import Optional
 
@@ -102,10 +103,14 @@ def evaluate_on_test_set(
     logger.info("")
     logger.info("  Per-class AUC-ROC:")
     for cls, auc in sorted(
-        metrics.auc_per_class.items(), key=lambda x: -x[1]
+        metrics.auc_per_class.items(),
+        key=lambda x: (-x[1] if not math.isnan(x[1]) else 1),
     ):
-        bar = "█" * int(auc * 20)
-        logger.info("    %-22s %.4f  %s", cls, auc, bar)
+        if math.isnan(auc):
+            logger.info("    %-22s   N/A  (no positive samples in split)", cls)
+        else:
+            bar = "█" * int(auc * 20)
+            logger.info("    %-22s %.4f  %s", cls, auc, bar)
 
     # ── Save results JSON ─────────────────────────────────────────
     results = metrics.to_dict()
