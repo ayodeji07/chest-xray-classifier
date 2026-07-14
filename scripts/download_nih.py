@@ -63,7 +63,7 @@ def show_status() -> None:
         size_mb = sum(p.stat().st_size for p in full_imgs) / 1_048_576
         print(f"  Total size      : {size_mb:.0f} MB ({size_mb/1024:.1f} GB)")
 
-    estimated_batches = len(full_imgs) // 9000
+    estimated_batches = len(full_imgs) // 5000
     print(f"  Est. batches    : ~{estimated_batches} of 12")
     print()
 
