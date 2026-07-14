@@ -138,7 +138,6 @@ def train(
         factor   = cfg.lr_factor,
         patience = cfg.lr_patience,
         min_lr   = cfg.min_lr,
-        verbose  = True,
     )
 
     # ── Resume ────────────────────────────────────────────────────
