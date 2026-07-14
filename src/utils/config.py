@@ -245,16 +245,19 @@ class DataConfig:
     ]
 
     # NIH label CSV download URL
+    # The original nihcc.box.com static links expire periodically;
+    # this GitHub mirror serves the same Data_Entry_2017.csv content.
     nih_labels_url: str = (
-        "https://nihcc.box.com/shared/static/"
-        "7tvkm27gzg1wn9k0dlp0z7ubjtztc7q5.csv"
+        "https://raw.githubusercontent.com/gregwchase/nih-chest-xray"
+        "/master/data/Data_Entry_2017.csv"
     )
 
-    # NIH subset: a curated 500-image sample for local development.
-    # Hosted on HuggingFace datasets for reliable access.
+    # NIH subset: the first N images (see TrainingConfig.subset_size)
+    # extracted from NIH batch 1, mirrored on HuggingFace with original
+    # filenames intact so they match nih_labels_url's Image Index column.
     nih_subset_url: str = (
-        "https://huggingface.co/datasets/Falah/nih-chest-xray-subset"
-        "/resolve/main/subset_500.zip"
+        "https://huggingface.co/datasets/alkzar90/NIH-Chest-X-ray-dataset"
+        "/resolve/main/data/images/images_001.zip"
     )
 
     # Image normalisation statistics from ImageNet.

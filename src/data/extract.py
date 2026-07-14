@@ -176,11 +176,12 @@ def download_labels_csv() -> Path:
 
 
 def download_subset() -> Path:
-    """Download the 500-image development subset (~200MB).
+    """Download the development subset (default 500 images).
 
-    This is the default data mode for local development.
-    The subset is a stratified sample from NIH ChestX-ray14
-    with at least 50 images per pathology class.
+    This is the default data mode for local development. The subset
+    is the first N images (TrainingConfig.subset_size) found in NIH
+    batch 1, pulled from a HuggingFace-hosted mirror that preserves
+    original NIH filenames so they match the labels CSV.
 
     The subset is extracted to data/raw/subset/.
 
@@ -198,38 +199,32 @@ def download_subset() -> Path:
         )
         return dest_dir
 
-    logger.info("Downloading 500-image NIH subset (~200MB)...")
-    zip_dest = Paths.raw / "subset_500.zip"
+    target_count = TrainingConfig.subset_size
+    logger.info("Downloading NIH image batch for the %d-image subset...", target_count)
+    zip_dest = Paths.raw / "subset_batch.zip"
 
-    # Try HuggingFace hosted subset first; fall back to Kaggle
-    urls_to_try = [
-        DataConfig.nih_subset_url,
-        "https://www.kaggle.com/datasets/nih-chest-xrays/data",
-    ]
-
-    downloaded = False
-    for url in urls_to_try:
-        try:
-            _download_file(url=url, dest=zip_dest, desc="NIH subset")
-            downloaded = True
-            break
-        except Exception as exc:
-            logger.warning("Subset download failed from %s: %s", url, exc)
-
-    if not downloaded:
+    try:
+        _download_file(url=DataConfig.nih_subset_url, dest=zip_dest, desc="NIH subset batch")
+    except Exception as exc:
         logger.warning(
-            "Could not auto-download subset.\n"
+            "Could not auto-download subset (%s).\n"
             "Please download manually from:\n"
             "  https://www.kaggle.com/datasets/nih-chest-xrays/data\n"
-            "Place ~500 PNG images in: %s",
-            dest_dir,
+            "Place PNG images in: %s",
+            exc, dest_dir,
         )
         return dest_dir
 
-    # Extract zip
-    logger.info("Extracting subset to %s...", dest_dir)
+    logger.info("Extracting first %d images to %s...", target_count, dest_dir)
+    dest_dir.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(zip_dest, "r") as zf:
-        zf.extractall(dest_dir)
+        image_names = [
+            name for name in zf.namelist()
+            if name.lower().endswith(".png") and "__MACOSX" not in name
+        ]
+        for name in image_names[:target_count]:
+            with zf.open(name) as src, open(dest_dir / Path(name).name, "wb") as out:
+                shutil.copyfileobj(src, out)
     zip_dest.unlink()   # clean up zip after extraction
 
     extracted = list(dest_dir.glob("*.png"))
