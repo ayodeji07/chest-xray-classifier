@@ -339,10 +339,13 @@ def load_labels_dataframe() -> pd.DataFrame:
             keep.append(col)
     df = df[keep].copy()
 
-    # Expand pipe-separated labels into binary columns
+    # Expand pipe-separated labels into binary columns.
+    # NIH's Finding Labels column uses "Pleural_Thickening" (underscore,
+    # matching our class name exactly) — do not replace "_" with " " here,
+    # that would break matching for this one class.
     for pathology in PATHOLOGY_CLASSES:
         df[pathology] = df["label_str"].str.contains(
-            pathology.replace("_", " "), case=False, na=False
+            pathology, case=False, na=False
         ).astype(int)
 
     df["no_finding"] = df["label_str"].str.contains(
