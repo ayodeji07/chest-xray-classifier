@@ -15,7 +15,12 @@ Run:
 from __future__ import annotations
 
 import io
+import sys
 from pathlib import Path
+
+# Streamlit adds this script's own directory (app/) to sys.path, not the
+# project root, so `src...` imports below would fail without this.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import streamlit as st
 
