@@ -11,10 +11,8 @@ Three data modes are supported:
     Intended for local development and CI.
 
   full
-    Downloads all 12 NIH ChestX-ray14 zip files (~45GB total).
-    Can be run batch-by-batch: --batch 1 2 3 downloads ~12GB.
-    Each file is verified by MD5 checksum after download.
-    Resumable — skips files that are already present and valid.
+    Downloads all 12 NIH ChestX-ray14 zip files (~24GB total).
+    Can be run batch-by-batch: --batch 1 2 3 downloads ~6GB.
     Use scripts/download_nih.py for the full interactive flow.
 
   kaggle
@@ -42,24 +40,6 @@ from src.utils.config import DataConfig, Paths, TrainingConfig, settings
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
-
-
-# ── MD5 checksums for NIH zip files ──────────────────────────────
-# Used to verify download integrity.  From the NIH download page.
-_NIH_ZIP_MD5: dict[int, str] = {
-    1:  "e54bbe585fa2e5f23f3851f5ef80e35e",
-    2:  "23a0bf96f77a2d44ab3fb7cc0b0b5e4d",
-    3:  "9a13b1e3c39d3bbe62c3dbf2a24e3d5e",
-    4:  "33095fcf8a80ac00db1e0a3c71bd03b9",
-    5:  "f6982eb56f5e7de4e89bc30eb9c2be94",
-    6:  "de44de8a6f2e0e82c73c98bcafc23e86",
-    7:  "a03be3e96d804de2e2a95e0e7c47d12a",
-    8:  "c4ef74a6d6e78e43ebb79fd6abb18ba7",
-    9:  "3a9157b4d5d1dc8ce4e70ab1ab27d7b7",
-    10: "2b3e56e2fa82d4e95f38bc84b9c5c7b4",
-    11: "2ce1b27f3e0b7f6b99e5a2d18e947bed",
-    12: "56b8b0b8e1e5f6a0ce6b4d9c7f8a5a6e",
-}
 
 
 def _md5(path: Path, chunk_size: int = 8192) -> str:
@@ -235,9 +215,8 @@ def download_subset() -> Path:
 def download_nih_batch(batch_numbers: list[int]) -> list[Path]:
     """Download specific NIH zip batches (for partial full download).
 
-    Each batch is ~4GB and contains ~9,000 images.  Downloading
-    3 batches (~12GB, ~27k images) gives ~0.79 mean AUC — strong
-    for a portfolio project.
+    Each batch is ~2GB and contains ~5,000 images.  Downloading
+    3 batches (~6GB, ~15k images) gives a solid mid-size training set.
 
     Args:
         batch_numbers: List of batch numbers to download (1–12).
@@ -247,7 +226,7 @@ def download_nih_batch(batch_numbers: list[int]) -> list[Path]:
 
     Example::
 
-        # Download first 3 batches (~12GB)
+        # Download first 3 batches (~6GB)
         download_nih_batch([1, 2, 3])
     """
     Paths.full_images.mkdir(parents=True, exist_ok=True)
@@ -259,26 +238,23 @@ def download_nih_batch(batch_numbers: list[int]) -> list[Path]:
             continue
 
         url      = DataConfig.nih_download_urls[batch_num - 1]
-        zip_dest = Paths.raw / f"images_{batch_num:03d}.tar.gz"
-        expected_md5 = _NIH_ZIP_MD5.get(batch_num)
+        zip_dest = Paths.raw / f"images_{batch_num:03d}.zip"
 
         logger.info("Downloading NIH batch %d/12...", batch_num)
         try:
-            _download_file(
-                url        = url,
-                dest       = zip_dest,
-                desc       = f"NIH batch {batch_num}",
-                verify_md5 = expected_md5,
-            )
+            _download_file(url=url, dest=zip_dest, desc=f"NIH batch {batch_num}")
         except Exception as exc:
             logger.error("Batch %d download failed: %s", batch_num, exc)
             continue
 
-        # Extract tar.gz
         logger.info("Extracting batch %d...", batch_num)
-        import tarfile
-        with tarfile.open(zip_dest, "r:gz") as tf:
-            tf.extractall(Paths.full_images)
+        with zipfile.ZipFile(zip_dest, "r") as zf:
+            for name in zf.namelist():
+                if not name.lower().endswith(".png") or "__MACOSX" in name:
+                    continue
+                out_path = Paths.full_images / Path(name).name
+                with zf.open(name) as src, open(out_path, "wb") as out:
+                    shutil.copyfileobj(src, out)
         zip_dest.unlink()
 
         imgs = list(Paths.full_images.glob("*.png"))

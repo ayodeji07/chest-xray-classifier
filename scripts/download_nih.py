@@ -3,16 +3,16 @@ scripts/download_nih.py
 ────────────────────────────────────────────────────────────────
 NIH ChestX-ray14 dataset downloader.
 
-Downloads the NIH dataset in 12 batches (~4GB each, ~45GB total).
+Downloads the NIH dataset in 12 batches (~2GB each, ~24GB total).
 Supports partial downloads — specify individual batches to control
 how much disk space you use.
 
 Usage
 ─────
-  # Download all 12 batches (~45GB)
+  # Download all 12 batches (~24GB)
   python scripts/download_nih.py
 
-  # Download first 3 batches only (~12GB, ~27k images)
+  # Download first 3 batches only (~6GB, ~15k images)
   python scripts/download_nih.py --batches 1 2 3
 
   # Download just the labels CSV (~3MB)
@@ -21,13 +21,13 @@ Usage
   # Check what is already downloaded
   python scripts/download_nih.py --status
 
-Performance by batch count
+Performance by batch count (approximate — actual counts vary by batch)
 ──────────────────────────
   Batches  Images   Disk    Expected mean AUC
-  1        ~9,000   ~4GB    ~0.71
-  3        ~27,000  ~12GB   ~0.79
-  6        ~54,000  ~24GB   ~0.81
-  12       ~112,000 ~45GB   ~0.83+
+  1        ~5,000   ~2GB    ~0.71
+  3        ~15,000  ~6GB    ~0.79
+  6        ~30,000  ~12GB   ~0.81
+  12       ~60,000  ~24GB   ~0.83+
 ────────────────────────────────────────────────────────────────
 """
 
