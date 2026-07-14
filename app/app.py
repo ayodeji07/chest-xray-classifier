@@ -221,12 +221,12 @@ with img_col:
     if show_gradcam:
         tab_orig, tab_cam = st.tabs(["Original", "Grad-CAM"])
         with tab_orig:
-            st.image(image, use_column_width=True, caption="Uploaded X-ray")
+            st.image(image, width="stretch", caption="Uploaded X-ray")
         with tab_cam:
-            st.image(overlay, use_column_width=True,
+            st.image(overlay, width="stretch",
                      caption=f"Grad-CAM — {top_cls}")
     else:
-        st.image(image, use_column_width=True, caption="Uploaded X-ray")
+        st.image(image, width="stretch", caption="Uploaded X-ray")
 
 with pred_col:
     st.markdown("### Pathology Predictions")
@@ -279,6 +279,8 @@ with pred_col:
 
 # ── Grad-CAM class selector ───────────────────────────────────────
 if show_gradcam and visible:
+    from src.utils.config import PATHOLOGY_DISPLAY_NAMES as PATHOLOGY_DISPLAY_NAMES_LOCAL
+
     st.markdown("---")
     st.markdown("### Grad-CAM — Select class to visualise")
     selected_cls = st.selectbox(
@@ -305,7 +307,4 @@ if show_gradcam and visible:
             PilImage.open(io.BytesIO(img_bytes)).convert("RGB"), heatmap
         )
         st.image(overlay_sel, caption=f"Grad-CAM — {selected_cls}",
-                 use_column_width=True)
-
-# lazy import for format_func
-from src.utils.config import PATHOLOGY_DISPLAY_NAMES as PATHOLOGY_DISPLAY_NAMES_LOCAL
+                 width="stretch")
