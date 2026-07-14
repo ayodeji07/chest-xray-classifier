@@ -36,9 +36,15 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 
 # ── Project root ──────────────────────────────────────────────────
 ROOT = Path(__file__).resolve().parents[2]
+
+# Load .env before any os.getenv() calls below read their defaults —
+# without this, .env is inert and every setting silently falls back
+# to the hardcoded default regardless of what's in the file.
+load_dotenv(ROOT / ".env")
 
 
 class Paths:
