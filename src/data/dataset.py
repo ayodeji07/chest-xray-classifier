@@ -27,14 +27,13 @@ The weights are exposed via ChestXrayDataset.get_pos_weights().
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
 
-from src.utils.config import PATHOLOGY_CLASSES, NUM_CLASSES, Paths
+from src.utils.config import PATHOLOGY_CLASSES, NUM_CLASSES
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)

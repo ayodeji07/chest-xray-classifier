@@ -2,12 +2,8 @@
 tests/test_dataset.py — Unit tests for the data pipeline.
 """
 from __future__ import annotations
-import numpy as np
 import pandas as pd
-import pytest
 import torch
-from unittest.mock import MagicMock, patch
-from pathlib import Path
 
 from src.utils.config import PATHOLOGY_CLASSES, NUM_CLASSES
 

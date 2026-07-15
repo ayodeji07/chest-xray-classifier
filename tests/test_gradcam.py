@@ -5,7 +5,6 @@ from __future__ import annotations
 import numpy as np
 import pytest
 import torch
-from unittest.mock import MagicMock, patch
 
 from src.utils.config import PATHOLOGY_CLASSES, NUM_CLASSES
 

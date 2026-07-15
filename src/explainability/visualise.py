@@ -16,7 +16,7 @@ from typing import Optional
 
 import numpy as np
 
-from src.utils.config import GradCAMConfig, PATHOLOGY_CLASSES, Paths
+from src.utils.config import GradCAMConfig, Paths
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -77,7 +77,7 @@ def generate_multi_class_grid(
             original_image, heatmaps[top_class], alpha=alpha
         )
 
-    from src.utils.image_utils import overlay_heatmap, resize_for_display
+    from src.utils.image_utils import overlay_heatmap
 
     # Sort classes by probability descending
     ranked = sorted(probs.items(), key=lambda x: -x[1])[:top_k]

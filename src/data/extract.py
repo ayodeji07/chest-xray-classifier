@@ -36,7 +36,7 @@ from typing import Optional
 
 import pandas as pd
 
-from src.utils.config import DataConfig, Paths, TrainingConfig, settings
+from src.utils.config import DataConfig, Paths, TrainingConfig
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -351,7 +351,6 @@ def validate_images(image_dir: Path, labels_df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         Filtered DataFrame with only valid, existing images.
     """
-    from src.utils.image_utils import validate_image
 
     logger.info(
         "Validating images in %s against %d labels...",

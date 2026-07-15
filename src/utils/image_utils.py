@@ -18,7 +18,6 @@ in parallel DataLoader workers.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 
@@ -110,7 +109,6 @@ def image_to_tensor(
         tensor = image_to_tensor("xray.png", get_inference_transform())
         print(tensor.shape)   # torch.Size([3, 224, 224])
     """
-    import torch
     import torchvision.transforms.functional as TF
 
     img = load_xray(path)
@@ -239,7 +237,6 @@ def get_image_stats(path: Path | str) -> dict[str, float | int | str]:
     Returns:
         Dict with keys: width, height, mode, mean_pixel, std_pixel.
     """
-    from PIL import Image
 
     img = load_xray(path)
     arr = np.array(img)

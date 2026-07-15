@@ -5,7 +5,6 @@ from __future__ import annotations
 import numpy as np
 import pytest
 import torch
-from pathlib import Path
 
 from src.utils.config import NUM_CLASSES, PATHOLOGY_CLASSES
 

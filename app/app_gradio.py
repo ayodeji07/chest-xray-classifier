@@ -14,7 +14,6 @@ Deploy:
 
 from __future__ import annotations
 
-import io
 import sys
 from pathlib import Path
 
@@ -22,16 +21,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parents[1]))
 
 import gradio as gr
-import numpy as np
 from PIL import Image
 
-from src.data.transforms import get_inference_transform, get_gradcam_transform
+from src.data.transforms import get_inference_transform
 from src.explainability.gradcam import GradCAM
 from src.explainability.visualise import generate_gradcam_overlay, get_top_predictions
 from src.utils.config import (
     PATHOLOGY_CLASSES,
     PATHOLOGY_DISPLAY_NAMES,
-    PATHOLOGY_SEVERITY,
     Paths,
 )
 

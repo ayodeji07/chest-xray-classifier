@@ -28,13 +28,12 @@ Secondary metrics:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 import numpy as np
 import pandas as pd
 import torch
 
-from src.utils.config import PATHOLOGY_CLASSES, NUM_CLASSES
+from src.utils.config import PATHOLOGY_CLASSES
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)

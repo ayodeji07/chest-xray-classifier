@@ -80,8 +80,7 @@ def _load_model():
 def _run_inference(img_bytes: bytes) -> dict:
     """Run model inference and return predictions + Grad-CAM."""
     from PIL import Image
-    import torch
-    from src.data.transforms import get_inference_transform, get_gradcam_transform
+    from src.data.transforms import get_inference_transform
     from src.explainability.gradcam import GradCAM
     from src.explainability.visualise import (
         generate_gradcam_overlay,
@@ -308,7 +307,6 @@ if show_gradcam and visible:
 
     if selected_cls != top_cls:
         from PIL import Image as PilImage
-        import torch
         from src.data.transforms import get_gradcam_transform
         from src.explainability.gradcam import GradCAM
         from src.explainability.visualise import generate_gradcam_overlay

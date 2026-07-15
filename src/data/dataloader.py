@@ -28,7 +28,7 @@ from torch.utils.data import DataLoader
 
 from src.data.dataset import ChestXrayDataset
 from src.data.transforms import get_train_transform, get_val_transform
-from src.utils.config import Paths, TrainingConfig, settings
+from src.utils.config import Paths, TrainingConfig
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)

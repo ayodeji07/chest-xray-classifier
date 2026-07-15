@@ -15,7 +15,6 @@ from __future__ import annotations
 import base64
 import io
 import time
-from typing import Optional
 
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 

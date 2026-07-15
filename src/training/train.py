@@ -309,7 +309,6 @@ def train(
 def _dry_run_val(model, val_loader, device, criterion):
     """Run validation on a single batch — for dry-run mode only."""
     from src.models.metrics import EvalMetrics, compute_metrics
-    import numpy as np
 
     model.eval()
     with torch.no_grad():

@@ -41,7 +41,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from src.utils.config import GradCAMConfig, PATHOLOGY_CLASSES
+from src.utils.config import PATHOLOGY_CLASSES
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)

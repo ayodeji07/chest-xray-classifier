@@ -29,7 +29,6 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from src.utils.logger import get_logger
 
