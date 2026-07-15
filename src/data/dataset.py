@@ -210,6 +210,12 @@ class ChestXrayDataset(Dataset):
             take     = min(len(pos_rows), min_per_class)
             sampled_ids.update(random.sample(pos_rows, take))
 
+        # The per-class floor above can itself exceed target_size when
+        # target_size is small relative to the number of classes — trim
+        # back down so we always honour the target_size upper bound.
+        if len(sampled_ids) > target_size:
+            sampled_ids = set(random.sample(list(sampled_ids), target_size))
+
         # Second pass: fill remaining slots randomly
         remaining = target_size - len(sampled_ids)
         if remaining > 0:
