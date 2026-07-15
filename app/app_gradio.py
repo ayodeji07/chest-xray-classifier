@@ -39,6 +39,18 @@ from src.utils.config import (
 import torch
 from src.models.model import load_model_for_inference
 
+HF_MODEL_REPO = "ayodeji21/chest-xray-classifier"
+
+# Auto-download the checkpoint from HuggingFace Hub if missing —
+# checkpoints/ is gitignored, so a fresh Space build won't have it
+# unless it's uploaded manually or fetched here.
+if not Paths.best_model.exists():
+    import shutil
+    from huggingface_hub import hf_hub_download
+    downloaded = hf_hub_download(repo_id=HF_MODEL_REPO, filename="best_model.pt")
+    Paths.best_model.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy(downloaded, Paths.best_model)
+
 _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 _model  = load_model_for_inference(Paths.best_model, _device)
 _TRANSFORM = get_inference_transform()
