@@ -15,12 +15,16 @@ from __future__ import annotations
 import base64
 import io
 import time
+from typing import TYPE_CHECKING
 
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 
 from src.api.schemas import GradCAMResponse, PathologyPrediction, PredictResponse
 from src.utils.config import APIConfig, PATHOLOGY_DISPLAY_NAMES, PATHOLOGY_SEVERITY
 from src.utils.logger import get_logger
+
+if TYPE_CHECKING:
+    import PIL.Image
 
 logger = get_logger(__name__)
 router = APIRouter(prefix="/predict", tags=["Prediction"])

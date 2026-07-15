@@ -18,6 +18,7 @@ in parallel DataLoader workers.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -27,7 +28,12 @@ logger = get_logger(__name__)
 
 # Lazy imports — PIL and torch are only imported when a function
 # that needs them is first called.  This keeps import time fast
-# in contexts that only need config or logging.
+# in contexts that only need config or logging. The TYPE_CHECKING
+# import below is never executed at runtime — it only lets type
+# checkers (and ruff) resolve the string annotations below.
+if TYPE_CHECKING:
+    import PIL.Image
+    import torch
 
 
 def load_xray(path: Path | str) -> "PIL.Image.Image":

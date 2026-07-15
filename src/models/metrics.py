@@ -28,6 +28,7 @@ Secondary metrics:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -35,6 +36,10 @@ import torch
 
 from src.utils.config import PATHOLOGY_CLASSES
 from src.utils.logger import get_logger
+
+if TYPE_CHECKING:
+    from torch.utils.data import DataLoader
+    from src.models.model import ChestXrayClassifier
 
 logger = get_logger(__name__)
 

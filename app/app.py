@@ -24,6 +24,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import streamlit as st
 
+from src.utils.config import Paths
+
 # ── Page config — must be first Streamlit call ────────────────────
 st.set_page_config(
     page_title     = "Chest X-Ray Classifier",
@@ -192,8 +194,6 @@ if not img_bytes:
 # Check model is available — auto-download from HuggingFace Hub if
 # missing (checkpoints/ is gitignored, so hosted deployments like
 # Streamlit Cloud start without it).
-from src.utils.config import Paths
-
 HF_MODEL_REPO = "ayodeji21/chest-xray-classifier"
 
 if not Paths.best_model.exists():

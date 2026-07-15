@@ -12,12 +12,15 @@ evaluation notebook.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 import numpy as np
 
 from src.utils.config import GradCAMConfig, Paths
 from src.utils.logger import get_logger
+
+if TYPE_CHECKING:
+    import PIL.Image
 
 logger = get_logger(__name__)
 
