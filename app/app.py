@@ -190,8 +190,24 @@ if not img_bytes:
     st.info("Upload a chest X-ray above to begin.")
     st.stop()
 
-# Check model is available
+# Check model is available — auto-download from HuggingFace Hub if
+# missing (checkpoints/ is gitignored, so hosted deployments like
+# Streamlit Cloud start without it).
 from src.utils.config import Paths
+
+HF_MODEL_REPO = "ayodeji21/chest-xray-classifier"
+
+if not Paths.best_model.exists():
+    with st.spinner("Downloading model checkpoint (first run only)..."):
+        try:
+            import shutil
+            from huggingface_hub import hf_hub_download
+            downloaded = hf_hub_download(repo_id=HF_MODEL_REPO, filename="best_model.pt")
+            Paths.best_model.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(downloaded, Paths.best_model)
+        except Exception as exc:
+            st.error(f"Could not download model checkpoint from HuggingFace Hub: {exc}")
+
 if not Paths.best_model.exists():
     st.error(
         "No trained model found at `checkpoints/best_model.pt`.\n\n"
