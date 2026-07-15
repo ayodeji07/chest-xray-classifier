@@ -74,7 +74,7 @@ Full step-by-step: **[VSCODE_GUIDE.md](VSCODE_GUIDE.md)**
 | Evaluation | sklearn (AUC-ROC, AUPRC, F1) |
 | API | FastAPI |
 | Demo | Streamlit + Gradio (HuggingFace Spaces) |
-| Tests | pytest (36+ tests) |
+| Tests | pytest (63+ tests) |
 | CI | GitHub Actions |
 
 ---
@@ -119,7 +119,7 @@ app/
   app.py         Streamlit demo
   app_gradio.py  HuggingFace Spaces version
 notebooks/       00-03 walkthrough notebooks
-tests/           pytest suite (36+ tests)
+tests/           pytest suite (63+ tests)
 scripts/         download_nih.py
 checkpoints/     model weights saved here
 MODEL_CARD.md    Full model documentation

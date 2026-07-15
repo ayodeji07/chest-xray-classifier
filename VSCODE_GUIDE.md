@@ -176,7 +176,7 @@ pytest
 pytest --cov=src --cov-report=term-missing
 ```
 
-Expected: 36+ tests pass.
+Expected: 63+ tests pass.
 
 ---
 
