@@ -7,6 +7,8 @@ trained on NIH ChestX-ray14 with Grad-CAM explainability and a live Streamlit de
 
 [![CI](https://github.com/ayodeji07/chest-xray-classifier/actions/workflows/ci.yml/badge.svg)](https://github.com/ayodeji07/chest-xray-classifier/actions)
 
+![Grad-CAM explainability demo — original X-ray alongside heatmaps for its top predicted pathologies](assets/gradcam_showcase.png)
+
 ---
 
 ## What it does
