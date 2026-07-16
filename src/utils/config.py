@@ -11,7 +11,7 @@ Training modes
 ──────────────
   subset  — 500-image auto-downloaded sample for local development.
             Tests the full pipeline in minutes with no manual setup.
-  full    — Complete NIH ChestX-ray14 dataset (~45GB, 112k images).
+  full    — Up to 12 batches of NIH ChestX-ray14 (~24GB, ~60k images).
             Requires running scripts/download_nih.py first.
   kaggle  — Reads images from /kaggle/input/nih-chest-xrays/.
             Use this when running the training notebook on Kaggle.
@@ -223,7 +223,7 @@ class TrainingConfig:
 
     # ── Mode ──────────────────────────────────────────────────────
     # "subset" → 500-image local dev sample
-    # "full"   → complete NIH dataset (requires ~45GB)
+    # "full"   → up to 12 batches of NIH dataset (~24GB for all 12)
     # "kaggle" → Kaggle platform (/kaggle/input/nih-chest-xrays/)
     mode: str = os.getenv("TRAINING_MODE", "subset")
 

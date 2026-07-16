@@ -36,7 +36,7 @@ Open `.env` and set `TRAINING_MODE`:
 
 ```bash
 TRAINING_MODE=subset   # default — 500 images, ~200MB, runs on any laptop
-TRAINING_MODE=full     # full NIH dataset, ~45GB (see Phase 6)
+TRAINING_MODE=full     # up to 12 batches of NIH data, ~24GB (see Phase 7)
 TRAINING_MODE=kaggle   # use when running on Kaggle (T4 GPU)
 ```
 
@@ -103,13 +103,13 @@ Best model is saved to `checkpoints/best_model.pt`.
 
 ---
 
-## Phase 7 — Full dataset locally (when you have ~45GB space)
+## Phase 7 — Full dataset locally (when you have ~24GB space)
 
 ```bash
-# Download first 3 batches (~12GB) for a strong model
+# Download first 3 batches (~6GB) for a strong model
 python scripts/download_nih.py --batches 1 2 3
 
-# Download all 12 batches (~45GB)
+# Download all 12 batches (~24GB, ~60k images total)
 python scripts/download_nih.py
 
 # Check download status

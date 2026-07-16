@@ -92,9 +92,14 @@ Full step-by-step: **[VSCODE_GUIDE.md](VSCODE_GUIDE.md)**
 | Mode | Dataset | Storage | Device | AUC |
 |---|---|---|---|---|
 | `subset` | 500 images (auto-download) | ~200MB | CPU | ~0.70 |
-| `full` (3 batches) | ~27k images | ~12GB | GPU | ~0.79 |
-| `full` (all) | 112k images | ~45GB | GPU | ~0.83+ |
+| `full` (3 batches) | ~15k images | ~6GB | GPU | ~0.79 (est.) |
+| `full` (5 batches) | ~25k images | ~10GB | GPU | **0.80 (measured)** |
+| `full` (all 12 batches) | ~60k images | ~24GB | GPU | ~0.83+ (est.) |
 | `kaggle` | Pre-mounted NIH | 0MB local | T4 GPU | ~0.83+ |
+
+Batch sizes are ~5,000 images each (~2GB) on the mirrored data source
+used by `scripts/download_nih.py` — see that script's `--status` flag
+for exact counts once downloaded.
 
 Set `TRAINING_MODE` in `.env`. Full resume/checkpoint support — training can be interrupted and resumed.
 
