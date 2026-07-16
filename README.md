@@ -15,6 +15,11 @@ Upload a posterior-anterior chest X-ray → receive:
 - Per-pathology probabilities for 10 clinical conditions
 - Grad-CAM heatmap showing which image regions influenced each prediction
 - Severity indicators per finding
+- A reliability badge per finding, based on the model's own measured
+  test accuracy for that class — so predictions aren't all presented
+  with the same implied confidence
+- Plain-language explanations of each finding, written for visitors
+  with no medical or technical background
 
 ---
 

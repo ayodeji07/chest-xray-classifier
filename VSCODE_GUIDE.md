@@ -148,6 +148,10 @@ Features:
 - See per-pathology probability bars
 - Toggle Grad-CAM heatmap overlay
 - Select which pathology class to visualise
+- Per-finding reliability badge (High/Moderate/Low), based on the
+  model's measured test AUC for that class
+- Plain-language explanation of each finding, plus a "How to read
+  these results" guide for non-technical/non-medical visitors
 
 ---
 
