@@ -337,12 +337,32 @@ with pred_col:
     # Per-finding detail cards
     if visible:
         st.markdown("#### Findings")
+
+        with st.expander("ℹ️ How to read these results"):
+            st.markdown(
+                "- **Percentage** — how confident the model is that *this "
+                "image* shows that finding.\n"
+                "- **Severity** — how serious that type of finding "
+                "typically is *if actually present* (this doesn't change "
+                "based on the image).\n"
+                "- **Reliability badge** — how accurate this model "
+                "*tends to be* for that specific condition, based on "
+                "testing. A high-confidence prediction on a "
+                "low-reliability class is still worth double-checking.\n\n"
+                "Each finding also has a plain-language description "
+                "below it. None of this replaces a radiologist — see the "
+                "disclaimer above."
+            )
+
         class_auc = _load_class_auc()
+        from src.utils.config import PATHOLOGY_EXPLANATIONS
+
         for pred in visible:
             sev    = pred["severity"]
             colour = _SEVERITY_COLOURS.get(sev, "#95a5a6")
 
             display_name = pred["display_name"]
+            explanation  = PATHOLOGY_EXPLANATIONS.get(pred["class_name"], "")
             reliability  = _reliability_label(class_auc.get(pred["class_name"]))
             reliability_html = ""
             if reliability:
@@ -363,16 +383,13 @@ with pred_col:
                 f"padding:8px 12px; margin-bottom:8px; background:#fafafa'>"
                 f"<strong>{pred['display_name']}</strong> &nbsp;"
                 f"<span style='color:{colour}'>{pred['probability']:.1%}</span>"
-                f"<span style='color:#888; font-size:0.8rem'> · {sev}</span>"
+                f"<span style='color:#888; font-size:0.8rem'> · Severity: {sev}</span>"
                 f"{reliability_html}"
+                f"<div style='color:#666; font-size:0.85rem; margin-top:4px'>"
+                f"{explanation}</div>"
                 f"</div>",
                 unsafe_allow_html=True,
             )
-        st.caption(
-            "Reliability reflects this model's own measured AUC per class on "
-            "its test set — not the confidence of this specific prediction. "
-            "Low-reliability classes should be treated with extra scepticism."
-        )
 
 # ── Grad-CAM class selector ───────────────────────────────────────
 if show_gradcam and visible:

@@ -142,6 +142,59 @@ PATHOLOGY_SEVERITY: dict[str, str] = {
     "Pneumothorax":      "critical",
 }
 
+# Plain-language explanations for the app — written for visitors with
+# no medical or technical background. Not a substitute for clinical
+# information; kept short and appropriately hedged (e.g. "may" rather
+# than diagnostic claims).
+PATHOLOGY_EXPLANATIONS: dict[str, str] = {
+    "Atelectasis": (
+        "Part of the lung looks like it isn't fully inflated, which can "
+        "make breathing less effective in that area."
+    ),
+    "Cardiomegaly": (
+        "The heart appears larger than expected. This can be a sign the "
+        "heart is working harder than it should, for example due to high "
+        "blood pressure or a valve problem."
+    ),
+    "Consolidation": (
+        "An area of the lung looks filled with fluid or other material "
+        "instead of air — often seen with lung infections."
+    ),
+    "Edema": (
+        "Fluid appears to be building up in or around the lungs, which "
+        "can happen when the heart isn't pumping as efficiently as it "
+        "should."
+    ),
+    "Effusion": (
+        "Fluid has collected in the space around the lungs, which can "
+        "make it harder to take a full, deep breath."
+    ),
+    "Mass": (
+        "An abnormal growth or lump is visible. This is not automatically "
+        "cancer — it needs further imaging and evaluation to find out "
+        "what it actually is."
+    ),
+    "Nodule": (
+        "A small, round spot is visible in the lung. Most lung nodules "
+        "turn out to be harmless, but a doctor may want follow-up "
+        "imaging to be sure."
+    ),
+    "Pleural_Thickening": (
+        "The thin lining around the lungs looks thicker than normal. "
+        "This can happen after past infections, inflammation, or "
+        "exposure to certain irritants."
+    ),
+    "Pneumonia": (
+        "The image shows patterns consistent with a lung infection, "
+        "where air spaces in the lung may be filled with fluid or pus."
+    ),
+    "Pneumothorax": (
+        "Air has collected between the lung and the chest wall, causing "
+        "part or all of the lung to collapse. This can be serious and "
+        "needs prompt medical attention."
+    ),
+}
+
 
 class ModelConfig:
     """Model architecture settings."""
