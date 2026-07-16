@@ -18,7 +18,7 @@ From a fresh clone to a running Streamlit demo.
 ## Phase 1 — Clone and environment
 
 ```bash
-git clone https://github.com/<your-username>/chest-xray-classifier
+git clone https://github.com/ayodeji07/chest-xray-classifier
 cd chest-xray-classifier
 
 python -m venv .venv

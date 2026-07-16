@@ -5,7 +5,7 @@
 Multi-label chest X-ray pathology classification using DenseNet121 (CheXNet architecture),
 trained on NIH ChestX-ray14 with Grad-CAM explainability and a live Streamlit demo.
 
-[![CI](https://github.com/<your-username>/chest-xray-classifier/actions/workflows/ci.yml/badge.svg)](https://github.com/<your-username>/chest-xray-classifier/actions)
+[![CI](https://github.com/ayodeji07/chest-xray-classifier/actions/workflows/ci.yml/badge.svg)](https://github.com/ayodeji07/chest-xray-classifier/actions)
 
 ---
 
@@ -20,14 +20,17 @@ Upload a posterior-anterior chest X-ray → receive:
 
 ## Live demo
 
-🔗 [chest-xray.streamlit.app](https://chest-xray.streamlit.app) *(deploy your own — see VSCODE_GUIDE.md)*
+🔗 [chest-xray-classifier-app.streamlit.app](https://chest-xray-classifier-app.streamlit.app/)
+
+The model checkpoint is hosted on [HuggingFace Hub](https://huggingface.co/ayodeji21/chest-xray-classifier)
+and downloaded automatically on first run — see `app/app.py`.
 
 ---
 
 ## Quick start
 
 ```bash
-git clone https://github.com/<your-username>/chest-xray-classifier
+git clone https://github.com/ayodeji07/chest-xray-classifier
 cd chest-xray-classifier
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
