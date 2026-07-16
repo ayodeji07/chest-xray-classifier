@@ -64,6 +64,39 @@ _SEVERITY_COLOURS = {
 
 _SAMPLE_DIR = Path(__file__).parents[1] / "data" / "sample_xrays"
 
+# Reliability bands from the model's own measured per-class test AUC
+# (data/processed/eval_results.json, written by evaluate.py) — this
+# model's accuracy varies a lot by class, and predictions shouldn't
+# all be presented with the same implied confidence.
+_RELIABILITY_BANDS = [
+    (0.85, "High reliability",     "#27ae60"),
+    (0.75, "Moderate reliability", "#f39c12"),
+    (0.0,  "Low reliability",      "#e74c3c"),
+]
+
+
+@st.cache_data
+def _load_class_auc() -> dict:
+    """Load per-class test AUC from the last evaluation run, if any."""
+    try:
+        import json
+        results = json.loads(Paths.eval_results.read_text())
+        return results.get("auc_per_class", {})
+    except (FileNotFoundError, ValueError):
+        return {}
+
+
+def _reliability_label(auc: float | None) -> tuple[str, str] | None:
+    """Return (label, colour) for a class's measured AUC, or None if
+    no evaluation data is available for it.
+    """
+    if auc is None:
+        return None
+    for min_auc, label, colour in _RELIABILITY_BANDS:
+        if auc >= min_auc:
+            return label, colour
+    return None
+
 
 # ── Cached model loading ──────────────────────────────────────────
 
@@ -131,7 +164,13 @@ with st.sidebar:
         "Prediction threshold",
         min_value=0.05, max_value=0.95,
         value=0.3, step=0.05,
-        help="Minimum probability to display a prediction",
+        help=(
+            "The model scores every pathology from 0-100%. This slider "
+            "hides anything scored below it, so you only see findings "
+            "the model is at least this confident about. Lower = see "
+            "more possible findings (more false alarms). Higher = only "
+            "see the findings it's more sure of (may miss weaker signals)."
+        ),
     )
 
     show_gradcam = st.checkbox("Show Grad-CAM heatmap", value=True)
@@ -171,7 +210,7 @@ with col_sample:
     sample_files = list(_SAMPLE_DIR.glob("*.png")) + \
                    list(_SAMPLE_DIR.glob("*.jpg"))
     if sample_files:
-        for sf in sample_files[:3]:
+        for sf in sample_files:
             if st.button(sf.stem[:20], use_container_width=True):
                 st.session_state["uploaded_bytes"] = sf.read_bytes()
 
@@ -279,18 +318,42 @@ with pred_col:
     # Per-finding detail cards
     if visible:
         st.markdown("#### Findings")
+        class_auc = _load_class_auc()
         for pred in visible:
             sev    = pred["severity"]
             colour = _SEVERITY_COLOURS.get(sev, "#95a5a6")
+
+            display_name = pred["display_name"]
+            reliability  = _reliability_label(class_auc.get(pred["class_name"]))
+            reliability_html = ""
+            if reliability:
+                rel_label, rel_colour = reliability
+                tooltip = (
+                    f"Based on measured model accuracy for "
+                    f"{display_name} on the held-out test set"
+                )
+                reliability_html = (
+                    f"<span style='color:{rel_colour}; font-size:0.75rem; "
+                    f"border:1px solid {rel_colour}; border-radius:8px; "
+                    f"padding:1px 6px; margin-left:6px' "
+                    f"title='{tooltip}'>{rel_label}</span>"
+                )
+
             st.markdown(
                 f"<div style='border-left:4px solid {colour}; "
                 f"padding:8px 12px; margin-bottom:8px; background:#fafafa'>"
                 f"<strong>{pred['display_name']}</strong> &nbsp;"
                 f"<span style='color:{colour}'>{pred['probability']:.1%}</span>"
                 f"<span style='color:#888; font-size:0.8rem'> · {sev}</span>"
+                f"{reliability_html}"
                 f"</div>",
                 unsafe_allow_html=True,
             )
+        st.caption(
+            "Reliability reflects this model's own measured AUC per class on "
+            "its test set — not the confidence of this specific prediction. "
+            "Low-reliability classes should be treated with extra scepticism."
+        )
 
 # ── Grad-CAM class selector ───────────────────────────────────────
 if show_gradcam and visible:
