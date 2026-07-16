@@ -2,7 +2,7 @@
 
 **Model**: DenseNet121 fine-tuned on NIH ChestX-ray14
 **Version**: 1.0
-**Date**: 2024
+**Date**: 2026-07
 **Architecture**: CheXNet (Rajpurkar et al., 2017)
 
 ---
@@ -57,11 +57,19 @@
 
 ## Training Data
 
-**Dataset**: NIH ChestX-ray14
-- **Size**: 112,120 frontal-view X-ray images from 30,805 unique patients
+**Dataset**: NIH ChestX-ray14 (full dataset: 112,120 frontal-view X-ray
+images from 30,805 unique patients, single US institution)
+
+**This deployed model** was trained on a ~25,000-image subset (5 of the
+12 available batches), not the full 112,120-image set — see [Training
+modes](README.md#training-modes) for the accuracy/data-volume tradeoff.
+Re-running training on more batches will improve on the numbers below.
+
 - **Source**: National Institutes of Health Clinical Center
 - **Labels**: NLP-extracted from radiology reports (not verified by radiologists)
-- **Split**: Official NIH train/test split used
+- **Split**: Random 70/10/20 train/val/test split, stratified by class
+  representation (the official NIH split files were not used for this
+  run — see `src/data/dataloader.py::split_dataframe`)
 
 ### Known Dataset Limitations
 - Labels were extracted from radiology reports using NLP — estimated label accuracy ~90%
@@ -80,26 +88,37 @@
 
 ## Evaluation Results
 
-*Results on NIH ChestX-ray14 official test set (subset mode results will differ)*
+*Measured on the held-out random test split (n=5,000 images), using the
+checkpoint currently deployed in the live demo. Reproduce with
+`python -m src.training.evaluate`.*
 
-| Pathology | AUC-ROC | AUPRC |
-|---|---|---|
-| Cardiomegaly | ~0.92 | — |
-| Pneumothorax | ~0.89 | — |
-| Effusion | ~0.86 | — |
-| Mass | ~0.87 | — |
-| Edema | ~0.89 | — |
-| Pleural Thickening | ~0.81 | — |
-| Atelectasis | ~0.81 | — |
-| Consolidation | ~0.79 | — |
-| Nodule | ~0.78 | — |
-| Pneumonia | ~0.77 | — |
-| **Mean** | **~0.83** | — |
+| Pathology | AUC-ROC | AUPRC | Precision | Recall | F1 |
+|---|---|---|---|---|---|
+| Cardiomegaly | 0.919 | 0.402 | 0.269 | 0.740 | 0.394 |
+| Effusion | 0.870 | 0.443 | 0.330 | 0.719 | 0.453 |
+| Edema | 0.864 | 0.117 | 0.127 | 0.532 | 0.206 |
+| Mass | 0.810 | 0.240 | 0.177 | 0.518 | 0.264 |
+| Pneumothorax | 0.794 | 0.210 | 0.138 | 0.567 | 0.222 |
+| Atelectasis | 0.790 | 0.302 | 0.227 | 0.662 | 0.339 |
+| Consolidation | 0.780 | 0.143 | 0.116 | 0.583 | 0.194 |
+| Pleural Thickening | 0.774 | 0.118 | 0.112 | 0.439 | 0.178 |
+| Nodule | 0.719 | 0.188 | 0.147 | 0.454 | 0.222 |
+| Pneumonia | 0.666 | 0.024 | 0.043 | 0.217 | 0.071 |
+| **Mean** | **0.799** | **0.219** | — | — | — |
 
-*Actual results depend on training data volume and hardware. Run `python -m src.training.evaluate` for your specific model.*
+Precision/recall/F1 are computed at the default 0.5 decision threshold.
+Note the low precision across most classes — this reflects the
+dataset's heavy class imbalance (most images are "No Finding") more
+than a defect specific to this model; CheXNet-style models trained
+this way typically show the same pattern.
 
 ### Comparison with CheXNet Benchmark
-Our implementation targets the CheXNet (Rajpurkar et al., 2017) architecture and achieves comparable AUC-ROC on the full NIH dataset. The original CheXNet paper reported mean AUC of 0.841 across 14 classes.
+Our implementation targets the CheXNet (Rajpurkar et al., 2017)
+architecture. On ~22% of the full training data (~25k of 112k images),
+this run reaches a mean AUC of **0.799** vs. the original CheXNet
+paper's **0.841** on the full dataset — a reasonable result given the
+smaller training set, with a clear path to closing the gap by training
+on more batches (see `scripts/download_nih.py`).
 
 ---
 
