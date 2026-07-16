@@ -64,6 +64,12 @@ _SEVERITY_COLOURS = {
 
 _SAMPLE_DIR = Path(__file__).parents[1] / "data" / "sample_xrays"
 
+# Model checkpoint and its eval results are hosted together on
+# HuggingFace Hub — checkpoints/ and data/processed/ are both
+# gitignored, so hosted deployments like Streamlit Cloud have
+# neither unless fetched at runtime.
+HF_MODEL_REPO = "ayodeji21/chest-xray-classifier"
+
 # Reliability bands from the model's own measured per-class test AUC
 # (data/processed/eval_results.json, written by evaluate.py) — this
 # model's accuracy varies a lot by class, and predictions shouldn't
@@ -77,9 +83,24 @@ _RELIABILITY_BANDS = [
 
 @st.cache_data
 def _load_class_auc() -> dict:
-    """Load per-class test AUC from the last evaluation run, if any."""
+    """Load per-class test AUC from the last evaluation run, if any.
+
+    Downloads eval_results.json from HuggingFace Hub on demand if it
+    isn't present locally (e.g. on Streamlit Cloud).
+    """
+    import json
+
+    if not Paths.eval_results.exists():
+        try:
+            from huggingface_hub import hf_hub_download
+            downloaded = hf_hub_download(repo_id=HF_MODEL_REPO, filename="eval_results.json")
+            Paths.eval_results.parent.mkdir(parents=True, exist_ok=True)
+            import shutil
+            shutil.copy(downloaded, Paths.eval_results)
+        except Exception:
+            return {}
+
     try:
-        import json
         results = json.loads(Paths.eval_results.read_text())
         return results.get("auc_per_class", {})
     except (FileNotFoundError, ValueError):
@@ -233,8 +254,6 @@ if not img_bytes:
 # Check model is available — auto-download from HuggingFace Hub if
 # missing (checkpoints/ is gitignored, so hosted deployments like
 # Streamlit Cloud start without it).
-HF_MODEL_REPO = "ayodeji21/chest-xray-classifier"
-
 if not Paths.best_model.exists():
     with st.spinner("Downloading model checkpoint (first run only)..."):
         try:
